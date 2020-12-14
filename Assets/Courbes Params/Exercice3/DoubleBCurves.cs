@@ -7,6 +7,9 @@ public class DoubleBCurves : MonoBehaviour
     public Transform[] controlPoints;
     public LineRenderer lineRenderer;
 
+    public Color color = Color.green;
+    public float width = 0.1f;
+
     private int curveCount = 0;
     private int layerOrder = 0;
     private int SEGMENT_COUNT = 50;
@@ -14,15 +17,23 @@ public class DoubleBCurves : MonoBehaviour
 
     void Start()
     {
+        //lineRenderer params
         if (!lineRenderer)
         {
             lineRenderer = GetComponent<LineRenderer>();
+            lineRenderer.useWorldSpace = true;
+            lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Additive"));
         }
         lineRenderer.sortingLayerID = layerOrder;
         curveCount = (int)controlPoints.Length / 3;
     }
     void Update()
     {
+        //updates lineRenderer
+        lineRenderer.startColor = color;
+        lineRenderer.endColor = color;
+        lineRenderer.startWidth = width;
+        lineRenderer.endWidth = width;
 
         DrawCurve();
     }
@@ -45,6 +56,8 @@ public class DoubleBCurves : MonoBehaviour
 
     Vector3 CalculateCubicBezierPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
     {
+        //B(t) = [(1 - t)3 *P0] + [3*(1 - t)² *t*P1] + [3*(1 - t)*t² *P2] + [t3 *P3]
+
         float u = 1 - t;
         float tt = t * t;
         float uu = u * u;
